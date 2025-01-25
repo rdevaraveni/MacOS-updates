@@ -1,0 +1,29 @@
+name: Update Mac Application using brew
+
+on:
+  workflow_dispatch:  # Allow manual triggering of the workflow
+
+jobs:
+  update_apps:
+    runs-on: [ self-hosted, macOS ]
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: List PATH variables
+      run: |
+        echo $PATH
+
+    - name: Run Python script
+      run: |
+        export PATH="/usr/local/bin:/opt/homebrew/bin:$PATH"
+        chmod +x update_mac_apps.py
+        ./update_mac_apps.py
+      env:
+        HOMEBREW_NO_AUTO_UPDATE: 1
+        
+    - name: Save Log as Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: logs
+        path: update_mac_apps.log
